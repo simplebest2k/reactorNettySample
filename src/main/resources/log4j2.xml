@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <Property name="filename">gccs</Property>
+        <Property name="application">gccs</Property>
+        <Property name="servername">$${env:SERVER_NAME:-localhost}</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level [%05T] [%35logger{2}:%5L] %msg%n</Pattern>
+            </PatternLayout>
+        </Console>
+        <RollingFile name="RollingFile" filename="/var/log/was/${servername}/${filename}.log"
+                     filePattern="/var/log/was/${servername}/$${date:yyyy-MM}/${filename}-%d{MM-dd-yyyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level [%05T] [%35logger{2}:%5L] %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="300 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="365" />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.springframework" level="INFO" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.apache.http" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.springframework.orm.jpa.JpaTransactionManager" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Root level="DEBUG">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>
